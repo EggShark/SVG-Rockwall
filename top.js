@@ -1,8 +1,11 @@
 let svg = document.getElementById("background");
 let colours = ["black","green"];
-let topPath = [];
-let lastX = 1;
-let lastY = 60;
+let topPath = [0];
+let shapes = {
+    0: document.createElementNS('http://www.w3.org/2000/svg', 'rect'),
+    1: document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+}; // going to use this for foot holds later it will be plygons with values I sepcify after I make some in ilustrator
+let userSize = document.getElementById("amount");
 function drawLine(x1,y1,x2,y2,colour,width){
     let aline = document.createElementNS('http://www.w3.org/2000/svg', 'line'); //need to do this for some reason has to do with xml --> html
     aline.setAttribute('x1', x1);
@@ -31,31 +34,45 @@ function heightOffset(lastY){
 function drawPolygon() {
     let pointString = ""
     let polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    console.log(topPath);
     for (let i = 0; i < topPath.length; i += 2) {
         pointString = pointString + `${topPath[i]},${topPath[i+1]} `;
     }
-    pointString = pointString + "2000,2000 0,2000 ";
+    pointString = pointString + `${topPath[topPath.length-2]},2000 0,2000`;
     polygon.setAttribute("points", pointString);
     polygon.setAttribute("fill", "yellow");
     svg.appendChild(polygon);
 }
 
-for (let index = 0; index < 6; index++) {
-    if(index % 2 == 0){
-        colour = colours[0];
+function linesdrawing(amount) {
+    let lastX = 1;
+    let lastY = 60;
+    topPath.length = 0;
+    for (let index = 0; index < amount; index++) {
+        if(index % 2 == 0){
+            colour = colours[0];
+        }
+        else{
+            colour = colours[1];
+        }
+        let x1 = lastX - 1;
+        let y1 = lastY - 1;
+        let x2 = lastX + getRandomInt(600);
+        let y2 = heightOffset(lastY);
+        if (y2 < 10){y2 = Math.abs(y2) * 2};
+        drawLine(x1,y1,x2,y2,colour, 10);
+        lastX = x2;
+        lastY = y2;
+        topPath.push(x1,y1,x2,y2);
     }
-    else{
-        colour = colours[1];
-    }
-    let x1 = lastX - 1;
-    let y1 = lastY - 1;
-    let x2 = lastX + getRandomInt(600);
-    let y2 = heightOffset(lastY);
-    if (y2 < 10){y2 = 10};
-    drawLine(x1,y1,x2,y2,colour, 10);
-    lastX = x2;
-    lastY = y2;
-    topPath.push(x1,y1,x2,y2);
 }
-drawPolygon();
+
+function start(){
+    svg.innerHTML = '';
+    if (userSize.value.length == 0){
+        userSize.value = 6;
+    }
+    linesdrawing(userSize.value);
+    drawPolygon();
+    svg.style.width = topPath[topPath.length - 2]
+}
+start();
