@@ -27,18 +27,18 @@ function heightOffset(lastY){
         return lastY + getRandomInt(100);
     }
     else {
-        return lastY + -getRandomInt(100);
+        return lastY + -getRandomInt(50); // makes it so it doesnt just go down slowly
     }
 }
 
 function drawPolygon() {
-    let pointString = ""
+    let pointString = "";
     let polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     for (let i = 0; i < topPath.length; i += 2) {
-        pointString = pointString + `${topPath[i]},${topPath[i+1]} `;
+        pointString = pointString + `${topPath[i]},${topPath[i+1]} `; // cant do polygon.points += so this is my solution its jank but it works alright
     }
-    pointString = pointString + `${topPath[topPath.length-2]},2000 0,2000`;
-    polygon.setAttribute("points", pointString);
+    pointString = pointString + `${topPath[topPath.length-2]},2000 0,2000`; // just finishes the polygon out
+    polygon.setAttribute("points", pointString); // acually sets points value
     polygon.setAttribute("fill", "yellow");
     svg.appendChild(polygon);
 }
@@ -53,7 +53,7 @@ function linesdrawing(amount) {
         }
         else{
             colour = colours[1];
-        }
+        } // changing colours was for debugg porpuses will leave in for now plan to remove it later
         let x1 = lastX - 1;
         let y1 = lastY - 1;
         let x2 = lastX + getRandomInt(600);
@@ -62,17 +62,17 @@ function linesdrawing(amount) {
         drawLine(x1,y1,x2,y2,colour, 10);
         lastX = x2;
         lastY = y2;
-        topPath.push(x1,y1,x2,y2);
+        topPath.push(x1,y1,x2,y2); // store the cordanits to trace with 
     }
 }
 
 function start(){
     svg.innerHTML = '';
     if (userSize.value.length == 0){
-        userSize.value = 6;
+        userSize.value = 6; //just a default value makes life easy
     }
     linesdrawing(userSize.value);
     drawPolygon();
-    svg.style.width = topPath[topPath.length - 2]
+    svg.style.width = topPath[topPath.length - 2] // X value --> pixels just allows the full thing to show
 }
 start();
