@@ -24,10 +24,10 @@ function getRandomInt(max) {
 function heightOffset(lastY){
     let x = getRandomInt(2);
     if (x == 1) {
-        return lastY + getRandomInt(100);
+        return lastY + getRandomInt(50);
     }
     else {
-        return lastY + -getRandomInt(50); // makes it so it doesnt just go down slowly
+        return lastY - getRandomInt(100); // makes it so it doesnt just go down slowly
     }
 }
 
