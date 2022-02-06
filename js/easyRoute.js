@@ -28,8 +28,12 @@ class easyRoute{
         while(lastY > 0){
             let curY = lastY - randn_bm(200);
             let x = this.Routecenter + randn_bm(300);
-            this.drawHand(x,curY,getRandomIntRange(20,40),getRandomIntRange(20,40),"white");
-            this.drawFoot(x + getRandomIntRange(-30, 30), curY + getRandomIntRange(-30,-60), getRandomIntRange(10,20), "red");
+            let hand2x = x - getRandomIntRange(80,100);
+            let hand2y = curY + getRandomInt(100,90);
+            this.drawHand(x,curY,getRandomIntRange(20,40),getRandomIntRange(10,20),"white");
+            this.drawHand(hand2x, hand2y, getRandomIntRange(20,40), getRandomIntRange(10,20),"white");
+            this.drawFoot(x + getRandomIntRange(-30, 30), curY + getRandomIntRange(40,60), getRandomIntRange(5,10), "red");
+            this.drawFoot(hand2x + getRandomIntRange(-30, 30), hand2y + getRandomIntRange(40,60), getRandomIntRange(5,10), "red");
             lastY = curY;
         }
     }
