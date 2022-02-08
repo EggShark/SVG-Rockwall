@@ -2,8 +2,8 @@ let svg = document.getElementById("background");
 class easyRoute{
     constructor(routeCenter){
         this.routeCenter = routeCenter;
-        this.chances = [.70,.20,.5];
-        this.events = [this.createCluster,this.createAverage,this.createLargeMove];
+        this.chances = [0,.70,.30]; //These need to line up as chances[0] is the chance of event[0] its jank could make a dict with array
+        this.events = [this.createCluster,this.createMirror,this.createLargeMove];
     }
     get center() {
         return this.routeCenter;
@@ -28,43 +28,46 @@ class easyRoute{
     drawRoute() {
         let lastY = 2000;
         while(lastY > 0){
-            this.chanceSelector();
             let curY = lastY - randn_bm(200);
-            let x = this.routeCenter + randn_bm(300);
-            let hand2x = x - getRandomIntRange(80,100);
-            let hand2y = curY + getRandomInt(100,90);
-            this.drawHand(x,curY,getRandomIntRange(20,40),getRandomIntRange(10,20),"white");
-            this.drawHand(hand2x, hand2y, getRandomIntRange(20,40), getRandomIntRange(10,20),"white");
-            this.drawFoot(x + getRandomIntRange(-30, 30), curY + getRandomIntRange(40,60), getRandomIntRange(5,10), "red");
-            this.drawFoot(hand2x + getRandomIntRange(-30, 30), hand2y + getRandomIntRange(40,60), getRandomIntRange(5,10), "red");
+            this.chanceSelector(curY);
             lastY = curY;
         }
     }
-    chanceSelector() {
+    chanceSelector(y) {
         let r = Math.random()
         for (let i = 0; i < this.chances.length; i++) {
-            console.log(r, this.chances[i], i, "pre check")
             if(r < this.chances[i]) {
-                console.log(r, this.chances[i]);
-                this.events[i](100);
+                this.events[i](y,this);
                 return 0;
             }
             else {
-                console.log("hmmm")
                 r = r - this.chances[i];
-                console.log(r, i, this.chances.length, "hmmm")
             }
         }
         console.warn("chances did not add up to 100 and couldnt decide");
     }
-    createCluster(y){
+    // I have to pass all of these function obj/this as it belives the array is this
+    createCluster(curY, obj){
         console.log("clustor");
     }
-    createLargeMove(y){
-        console.log("DYNOOO");
+    createLargeMove(curY, obj){
+        let x = obj.routeCenter + getRandomIntRange(-30, 50);
+        let x2 = obj.routeCenter + getRandomIntRange(-50, 30);
+        let y = curY + getRandomIntRange(10,30);
+        let y2 = curY + getRandomIntRange(80,100);
+        let footY = (y2 + y)/2
+        obj.drawHand(x, y, 40, 10, "white"); // hold at the bottom
+        obj.drawHand(x2, y2, 40, 10, "white"); // hold at the top
+        obj.drawFoot(x + getRandomIntRange(-10,10), footY, getRandomIntRange(5,10), "red"); // foot hold for when you stick the move
     }
-    createAverage(y){
-        console.log("average");
+    createMirror(curY, obj){
+        let x = obj.routeCenter + randn_bm(300);
+        let hand2x = x - getRandomIntRange(80,100);
+        let hand2y = curY + getRandomInt(100,90);
+        obj.drawHand(x,curY,getRandomIntRange(20,40),getRandomIntRange(10,20),"white");
+        obj.drawHand(hand2x, hand2y, getRandomIntRange(20,40), getRandomIntRange(10,20),"white");
+        obj.drawFoot(x + getRandomIntRange(-30, 30), curY + getRandomIntRange(40,60), getRandomIntRange(5,10), "red");
+        obj.drawFoot(hand2x + getRandomIntRange(-30, 30), hand2y + getRandomIntRange(40,60), getRandomIntRange(5,10), "red");
     }
 }
 function randn_bm(value) {
