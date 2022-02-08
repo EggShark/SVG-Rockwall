@@ -1,10 +1,12 @@
 let svg = document.getElementById("background");
 class easyRoute{
-    constructor(Routecenter){
-        this.Routecenter = Routecenter
+    constructor(routeCenter){
+        this.routeCenter = routeCenter;
+        this.chances = [.70,.20,.5];
+        this.events = [this.createCluster,this.createAverage,this.createLargeMove];
     }
     get center() {
-        return this.Routecenter;
+        return this.routeCenter;
     }
     drawHand(x,y,width,height,colour){
         let rectangle = document.createElementNS("http://www.w3.org/2000/svg", "rect"); // temperary as the next ones will be premade svgs
@@ -26,8 +28,9 @@ class easyRoute{
     drawRoute() {
         let lastY = 2000;
         while(lastY > 0){
+            this.chanceSelector();
             let curY = lastY - randn_bm(200);
-            let x = this.Routecenter + randn_bm(300);
+            let x = this.routeCenter + randn_bm(300);
             let hand2x = x - getRandomIntRange(80,100);
             let hand2y = curY + getRandomInt(100,90);
             this.drawHand(x,curY,getRandomIntRange(20,40),getRandomIntRange(10,20),"white");
@@ -36,6 +39,32 @@ class easyRoute{
             this.drawFoot(hand2x + getRandomIntRange(-30, 30), hand2y + getRandomIntRange(40,60), getRandomIntRange(5,10), "red");
             lastY = curY;
         }
+    }
+    chanceSelector() {
+        let r = Math.random()
+        for (let i = 0; i < this.chances.length; i++) {
+            console.log(r, this.chances[i], i, "pre check")
+            if(r < this.chances[i]) {
+                console.log(r, this.chances[i]);
+                this.events[i](100);
+                return 0;
+            }
+            else {
+                console.log("hmmm")
+                r = r - this.chances[i];
+                console.log(r, i, this.chances.length, "hmmm")
+            }
+        }
+        console.warn("chances did not add up to 100 and couldnt decide");
+    }
+    createCluster(y){
+        console.log("clustor");
+    }
+    createLargeMove(y){
+        console.log("DYNOOO");
+    }
+    createAverage(y){
+        console.log("average");
     }
 }
 function randn_bm(value) {
