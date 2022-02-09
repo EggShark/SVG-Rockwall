@@ -2,8 +2,9 @@ let svg = document.getElementById("background");
 class easyRoute{
     constructor(routeCenter){
         this.routeCenter = routeCenter;
-        this.chances = [0,.70,.30]; //These need to line up as chances[0] is the chance of event[0] its jank could make a dict with array
+        this.chances = [.3,.5,.2]; //These need to line up as chances[0] is the chance of event[0] its jank could make a dict with array
         this.events = [this.createCluster,this.createMirror,this.createLargeMove];
+        this.lastholdY = 2000; // we use this to check for collision
     }
     get center() {
         return this.routeCenter;
@@ -26,11 +27,8 @@ class easyRoute{
         svg.appendChild(circle);
     }
     drawRoute() {
-        let lastY = 2000;
-        while(lastY > 0){
-            let curY = lastY - randn_bm(200);
-            this.chanceSelector(curY);
-            lastY = curY;
+        while (this.lastholdY > 0) {
+            this.chanceSelector(this.lastholdY);
         }
     }
     chanceSelector(y) {
@@ -49,25 +47,63 @@ class easyRoute{
     // I have to pass all of these function obj/this as it belives the array is this
     createCluster(curY, obj){
         console.log("clustor");
+
+        let handCount = getRandomIntRange(4,6);
+        for (let i = 1; i < handCount; i++){ //starting with 1 so I can use it for * operatios to decide placement
+            let handX = obj.routeCenter + randn_bm(300); 
+            let y = curY - getRandomIntRange(50,90);
+            obj.lastholdY = y;
+            let footX = handX + getRandomIntRange(-50,50);
+            let footY = y + getRandomIntRange(40,50); 
+            obj.drawFoot(footX,footY,getRandomIntRange(5,10),"red");
+            obj.drawHand(handX,y,getRandomIntRange(20,40), getRandomIntRange(10,20), "black");
+            let r = Math.random();
+            if (r < .40) {
+                obj.drawHand(handX + getRandomIntRange(-100,-50), y, getRandomIntRange(20,40), getRandomIntRange(10,20),"black");
+            }
+            if (r > .60) {
+                obj.drawFoot(footX + getRandomIntRange(-50,50),y + getRandomIntRange(40,30), getRandomIntRange(5,10),"red");
+            }
+            curY = y
+            obj.lastholdY = y;
+        }
     }
     createLargeMove(curY, obj){
-        let x = obj.routeCenter + getRandomIntRange(-30, 50);
-        let x2 = obj.routeCenter + getRandomIntRange(-50, 30);
-        let y = curY + getRandomIntRange(10,30);
-        let y2 = curY + getRandomIntRange(80,100);
-        let footY = (y2 + y)/2
-        obj.drawHand(x, y, 40, 10, "white"); // hold at the bottom
-        obj.drawHand(x2, y2, 40, 10, "white"); // hold at the top
-        obj.drawFoot(x + getRandomIntRange(-10,10), footY, getRandomIntRange(5,10), "red"); // foot hold for when you stick the move
+        let hold1Y = curY - getRandomIntRange(20,40);
+        let hold1X = obj.routeCenter + randn_bm(300);
+        obj.drawHand(hold1X,hold1Y,getRandomIntRange(20,40), getRandomIntRange(10,20),"black");
+        let hold2Y = hold1Y - getRandomIntRange(90,150);
+        let hold2X = obj.routeCenter + randn_bm(300);
+        obj.drawHand(hold2X, hold2Y, getRandomIntRange(20,40), getRandomIntRange(10,20),"black");
+        let footY = (hold1Y + hold2Y)/2;
+        let footX = obj.routeCenter + randn_bm(300);
+        obj.drawFoot(footX,footY,getRandomIntRange(10,5),"red");
+        obj.lastholdY = hold2Y;
     }
     createMirror(curY, obj){
-        let x = obj.routeCenter + randn_bm(300);
-        let hand2x = x - getRandomIntRange(80,100);
-        let hand2y = curY + getRandomInt(100,90);
-        obj.drawHand(x,curY,getRandomIntRange(20,40),getRandomIntRange(10,20),"white");
-        obj.drawHand(hand2x, hand2y, getRandomIntRange(20,40), getRandomIntRange(10,20),"white");
-        obj.drawFoot(x + getRandomIntRange(-30, 30), curY + getRandomIntRange(40,60), getRandomIntRange(5,10), "red");
-        obj.drawFoot(hand2x + getRandomIntRange(-30, 30), hand2y + getRandomIntRange(40,60), getRandomIntRange(5,10), "red");
+        let hand1X = obj.routeCenter + randn_bm(300);
+        let hand1Y = curY - getRandomIntRange(20,40);
+        obj.drawHand(hand1X,hand1Y,50,10,"black");
+        let footX1 = hand1X + getRandomInt(-100,100);
+        let footY1 = hand1Y + getRandomIntRange(10,20)
+        obj.drawFoot(footX1,footY1,getRandomIntRange(10,5),"red");
+        let hand2X = hand1X + getRandomIntRange(100,150);
+        let hand2Y = hand1Y + getRandomIntRange(20,-20);
+        let footX2 = hand2X + getRandomInt(-100,100);
+        let footY2 = hand2Y + getRandomIntRange(10,20)
+        obj.drawFoot(footX2,footY2,getRandomIntRange(10,5),"red");
+        obj.drawHand(hand2X,hand2Y,getRandomIntRange(20,40), getRandomIntRange(10,20),"black")
+        obj.lastholdY = hand2Y;
+    }
+    collisionCheck(holdY){
+        if (Math.abs(holdY-this.lastholdY)  <= 60) {
+            return false
+        }
+    }
+    collisionCheckX(holdX, lastholdX){
+        if (Math.abs(holdX - lastholdX) <= 40) {
+            return
+        }
     }
 }
 function randn_bm(value) {
