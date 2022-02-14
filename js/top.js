@@ -1,6 +1,6 @@
-let svg = document.getElementById("background");
 let colours = ["black","green"];
-let topPath = [0];
+let topPath = [0]; // I have to put this here for the polygon path
+let routeCenters = []; // will store X vaules each route will be ~ 100-200 pixels apart and will allow it 
 let shapes = {
     0: document.createElementNS('http://www.w3.org/2000/svg', 'rect'),
     1: document.createElementNS('http://www.w3.org/2000/svg', 'circle')
@@ -17,30 +17,32 @@ function drawLine(x1,y1,x2,y2,colour,width){
     svg.appendChild(aline);
 }
 
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
-
 function heightOffset(lastY){
     let x = getRandomInt(2);
     if (x == 1) {
         return lastY + getRandomInt(50);
     }
     else {
-        return lastY - getRandomInt(100); // makes it so it doesnt just go down slowly
+        return lastY - getRandomInt(100); // makes it so it doesnt just go down
     }
 }
 
-function drawPolygon() {
+function drawBackground() {
     let pointString = "";
     let polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     for (let i = 0; i < topPath.length; i += 2) {
         pointString = pointString + `${topPath[i]},${topPath[i+1]} `; // cant do polygon.points += so this is my solution its jank but it works alright
     }
-    pointString = pointString + `${topPath[topPath.length-2]},2000 0,2000`; // just finishes the polygon out
+    pointString = pointString + `${topPath[topPath.length-2]},2000 0,2000 0,60`; // just finishes the polygon out
     polygon.setAttribute("points", pointString); // acually sets points value
     polygon.setAttribute("fill", "yellow");
     svg.appendChild(polygon);
+}
+
+function createRouteZones() {
+    if (routeCenters.length == 0) {
+        console.log("l")
+    }
 }
 
 function linesdrawing(amount) {
@@ -56,13 +58,13 @@ function linesdrawing(amount) {
         } // changing colours was for debugg porpuses will leave in for now plan to remove it later
         let x1 = lastX - 1;
         let y1 = lastY - 1;
-        let x2 = lastX + getRandomInt(600);
+        let x2 = lastX + getRandomIntRange(100,600);
         let y2 = heightOffset(lastY);
         if (y2 < 10){y2 = Math.abs(y2) * 2};
         drawLine(x1,y1,x2,y2,colour, 10);
         lastX = x2;
         lastY = y2;
-        topPath.push(x1,y1,x2,y2); // store the cordanits to trace with 
+        topPath.push(x2,y2); // store the cordanits to trace with 
     }
 }
 
@@ -72,7 +74,9 @@ function start(){
         userSize.value = 6; //just a default value makes life easy
     }
     linesdrawing(userSize.value);
-    drawPolygon();
+    drawBackground();
     svg.style.width = topPath[topPath.length - 2] // X value --> pixels just allows the full thing to show
 }
 start();
+let pain = new easyRoute(100);
+pain.drawRoute();
