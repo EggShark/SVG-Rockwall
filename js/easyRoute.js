@@ -3,6 +3,7 @@ class easyRoute{
     constructor(routeCenter){
         this.routeCenter = routeCenter;
         this.lastholdY = 2000;
+        this.lastHoldType = null;
     }
 get center() {
     return this.routeCenter;
@@ -10,8 +11,8 @@ get center() {
 drawHand(x,y){
     let asvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    let hold = getRandomIntRange(0,holds.hands.length);
     let viewboxSize = getRandomIntRange(2000,3000);
+    let hold = this.holdPicker();
     path.setAttribute("d", holds.hands[hold]);
     asvg.appendChild(path);
     asvg.setAttribute("x",x);
@@ -20,11 +21,29 @@ drawHand(x,y){
     svg.appendChild(asvg);
 }
 drawRoute() {
-    for (this.lastholdY > 0; this.lastholdY = this.lastholdY - 200;){
-        this.drawHand(this.routeCenter + getRandomIntRange(-200,200),this.lastholdY);
+    this.drawDebugLine()
+    while(this.lastholdY >= 0){
+        let holdY = this.lastholdY - getRandomIntRange(120,200);
+        this.drawHand(this.routeCenter + getRandomInt(-300,300),holdY);
+        this.lastholdY = holdY;
     }
 }
-    chanceSelector(y) {}
+holdPicker(){
+    let hold = getRandomIntRange(0,holds.hands.length);
+    if (hold == this.lastHoldType) return this.holdPicker(); // makes sure we dont get the same hold twice
+    this.lastHoldType = hold;
+    return hold;
+}
+drawDebugLine(){
+    let aline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    aline.setAttribute("x1",this.routeCenter);
+    aline.setAttribute("y1",2000);
+    aline.setAttribute("x2",this.routeCenter);
+    aline.setAttribute("y2",0);
+    aline.setAttribute("stroke-wdith",2);
+    aline.setAttribute("stroke","black");
+    svg.appendChild(aline);
+}
 }
 function randn_bm(value) {
     let u = 0, v = 0;

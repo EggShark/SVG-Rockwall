@@ -1,10 +1,6 @@
 let colours = ["black","green"];
 let topPath = [0]; // I have to put this here for the polygon path
-let routeCenters = []; // will store X vaules each route will be ~ 100-200 pixels apart and will allow it 
-let shapes = {
-    0: document.createElementNS('http://www.w3.org/2000/svg', 'rect'),
-    1: document.createElementNS('http://www.w3.org/2000/svg', 'circle')
-}; // going to use this for foot holds later it will be plygons with values I sepcify after I make some in ilustrator
+let routeCenters = []; // will store X vaules each route will be ~ 100-200 pixels apart and will allow it
 let userSize = document.getElementById("amount");
 function drawLine(x1,y1,x2,y2,colour,width){
     let aline = document.createElementNS('http://www.w3.org/2000/svg', 'line'); //need to do this for some reason has to do with xml --> html
@@ -76,7 +72,7 @@ function start(){
     linesdrawing(userSize.value);
     drawBackground();
     svg.style.width = topPath[topPath.length - 2] // X value --> pixels just allows the full thing to show
+    let pain = new easyRoute(300); // constructs class
+    pain.drawRoute(); // creates route
 }
 start();
-let pain = new easyRoute(300);
-pain.drawRoute();
