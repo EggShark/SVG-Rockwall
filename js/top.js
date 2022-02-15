@@ -78,5 +78,5 @@ function start(){
     svg.style.width = topPath[topPath.length - 2] // X value --> pixels just allows the full thing to show
 }
 start();
-let pain = new easyRoute(100);
+let pain = new easyRoute(300);
 pain.drawRoute();

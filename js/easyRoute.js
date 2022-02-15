@@ -2,20 +2,27 @@ let svg = document.getElementById("background");
 class easyRoute{
     constructor(routeCenter){
         this.routeCenter = routeCenter;
-        this.lastholdY = 2000; // we use this to check for collision
+        this.lastholdY = 2000;
     }
 get center() {
     return this.routeCenter;
 }
-drawHand(){
+drawHand(x,y){
     let asvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("d", holds.hands[2]);
+    let hold = getRandomIntRange(0,holds.hands.length);
+    let viewboxSize = getRandomIntRange(2000,3000);
+    path.setAttribute("d", holds.hands[hold]);
     asvg.appendChild(path);
+    asvg.setAttribute("x",x);
+    asvg.setAttribute("y",y);
+    asvg.setAttribute("viewBox",`0 0 ${viewboxSize} ${viewboxSize}`);
     svg.appendChild(asvg);
 }
 drawRoute() {
-    this.drawHand();
+    for (this.lastholdY > 0; this.lastholdY = this.lastholdY - 200;){
+        this.drawHand(this.routeCenter + getRandomIntRange(-200,200),this.lastholdY);
+    }
 }
     chanceSelector(y) {}
 }
