@@ -72,7 +72,7 @@ function start(){
     linesdrawing(userSize.value);
     drawBackground();
     svg.style.width = topPath[topPath.length - 2] // X value --> pixels just allows the full thing to show
-    let pain = new easyRoute(300); // constructs class
+    let pain = new easyRoute(300,0); // constructs class
     pain.drawRoute(); // creates route
 }
 start();
