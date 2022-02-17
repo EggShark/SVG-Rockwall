@@ -29,9 +29,9 @@ function drawBackground() {
     for (let i = 0; i < topPath.length; i += 2) {
         pointString = pointString + `${topPath[i]},${topPath[i+1]} `; // cant do polygon.points += so this is my solution its jank but it works alright
     }
-    pointString = pointString + `${topPath[topPath.length-2]},2000 0,2000 0,60`; // just finishes the polygon out
+    pointString = pointString + `${topPath[topPath.length-2]},4000 0,4000 0,60`; // just finishes the polygon out
     polygon.setAttribute("points", pointString); // acually sets points value
-    polygon.setAttribute("fill", "yellow");
+    polygon.setAttribute("fill", "#d3d3d3");
     svg.appendChild(polygon);
 }
 
@@ -57,7 +57,7 @@ function linesdrawing(amount) {
         let x2 = lastX + getRandomIntRange(100,600);
         let y2 = heightOffset(lastY);
         if (y2 < 10){y2 = Math.abs(y2) * 2};
-        drawLine(x1,y1,x2,y2,colour, 10);
+        drawLine(x1,y1,x2,y2,colour, 15);
         lastX = x2;
         lastY = y2;
         topPath.push(x2,y2); // store the cordanits to trace with 
@@ -72,7 +72,9 @@ function start(){
     linesdrawing(userSize.value);
     drawBackground();
     svg.style.width = topPath[topPath.length - 2] // X value --> pixels just allows the full thing to show
-    let pain = new easyRoute(300,0); // constructs class
+    let routeColour = getRandomInt(holds.colours.length);
+    let pain = new easyRoute(300,routeColour); // constructs class
     pain.drawRoute(); // creates route
 }
+svg.height.baseVal.valueAsString = "4000px";
 start();

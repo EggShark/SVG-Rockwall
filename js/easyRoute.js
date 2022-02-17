@@ -12,22 +12,20 @@ class easyRoute{
     drawHand(x,y){
         let asvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        let viewboxSize = getRandomIntRange(2000,3000);
         let hold = this.holdPicker();
         path.setAttribute("d", holds.hands[hold]);
+        path.setAttribute("fill", holds.colours[this.routeColour]);
         asvg.appendChild(path);
         asvg.setAttribute("x",x);
         asvg.setAttribute("y",y);
-        asvg.setAttribute("viewBox",`0 0 ${viewboxSize} ${viewboxSize}`);
-        asvg.setAttribute("class", `st${this.routeColour}`); // classes came named as st0-8 so I use `` with an int to selec st0-8
         svg.appendChild(asvg);
     }
     drawRoute() {
         this.drawDebugLine()
-        while(this.lastholdY >= 0){
-            let holdY = this.lastholdY - getRandomIntRange(120,200);
-            this.drawHand(this.routeCenter + getRandomInt(-300,300),holdY);
-            this.lastholdY = holdY;
+        for (let holdY = svg.height.baseVal.value; holdY > 0; holdY = holdY - getRandomIntRange(120,200)) {
+            console.log("ahhhh",holdY)
+            this.drawHand(this.routeCenter + ((randn_bm() - .5) * 200),holdY);
+            
         }
     }
     holdPicker(){
@@ -47,15 +45,21 @@ class easyRoute{
         svg.appendChild(aline);
     }
 }
-function randn_bm(value) {
+function randn_bm() {
     let u = 0, v = 0;
     while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
     while(v === 0) v = Math.random();
     let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
     num = num / 10.0 + 0.5; // Translate to 0 -> 1
-    if (num > 1 || num < 0) return randn_bm(value); // resample between 0 and 1
-    return Math.floor(num * value);
-}
+    if (num > 1 || num < 0) return randn_bm() // resample between 0 and 1
+    if(num>0.5){
+        num = 1.5-num
+    }
+    else{
+        num = 0.5 - num
+    }
+    return num
+  }
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
