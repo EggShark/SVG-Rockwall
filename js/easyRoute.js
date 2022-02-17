@@ -22,9 +22,9 @@ class easyRoute{
     }
     drawRoute() {
         this.drawDebugLine()
-        for (let holdY = svg.height.baseVal.value; holdY > 0; holdY = holdY - getRandomIntRange(120,200)) {
+        for (let holdY = svg.height.baseVal.value; holdY > 0; holdY = holdY - getRandomIntRange(150,230)) {
             console.log("ahhhh",holdY)
-            this.drawHand(this.routeCenter + ((randn_bm() - .5) * 200),holdY);
+            this.drawHand(this.routeCenter + getRandomIntRange(-150,150),holdY);
             
         }
     }
