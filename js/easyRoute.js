@@ -1,8 +1,9 @@
 let svg = document.getElementById("background");
 class easyRoute{
-    constructor(routeCenter, routeColour){
+    constructor(routeCenter, routeColour, maxHieght){
         this.routeCenter = routeCenter;
         this.routeColour = routeColour;
+        this.maxHieght = maxHieght;
         this.lastholdY = svg.height.baseVal.value;
         this.lastHoldType = null;
     }
@@ -21,7 +22,7 @@ class easyRoute{
     }
     drawRoute() {
         this.drawDebugLine()
-        for (let holdY = svg.height.baseVal.value; holdY > 0; holdY = holdY - getRandomIntRange(150,230)) {
+        for (let holdY = svg.height.baseVal.value; holdY > this.maxHieght; holdY = holdY - getRandomIntRange(150,230)) {
             this.drawHand(this.routeCenter + getRandomIntRange(-150,150),holdY);
         }
     }
