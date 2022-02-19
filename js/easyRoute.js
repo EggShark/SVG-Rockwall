@@ -10,29 +10,20 @@ class easyRoute{
         return this.routeCenter;
     }
     drawHand(x,y){
-        let asvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        let hold = this.holdPicker();
-        path.setAttribute("d", holds.hands[hold]);
-        path.setAttribute("fill", holds.colours[this.routeColour]);
-        asvg.appendChild(path);
-        asvg.setAttribute("x",x);
-        asvg.setAttribute("y",y);
-        svg.appendChild(asvg);
+        let newHold = new hold(x,y,this.routeColour,this.holdPicker());
+        svg.append(newHold.exportHold());
+    }
+    holdPicker(){
+        let hold = getRandomIntRange(0, holds.hands.length);
+        hold = (this.lastHoldType + hold) % holds.hands.length; // funky math to ensure the same hold isnt repeated
+        this.lastHoldType = hold;
+        return hold;
     }
     drawRoute() {
         this.drawDebugLine()
         for (let holdY = svg.height.baseVal.value; holdY > 0; holdY = holdY - getRandomIntRange(150,230)) {
-            console.log("ahhhh",holdY)
             this.drawHand(this.routeCenter + getRandomIntRange(-150,150),holdY);
-            
         }
-    }
-    holdPicker(){
-        let hold = getRandomInt(holds.hands.length);
-        if (hold == this.lastHoldType) return this.holdPicker(); // makes sure we dont get the same hold twice
-        this.lastHoldType = hold;
-        return hold;
     }
     drawDebugLine(){
         let aline = document.createElementNS('http://www.w3.org/2000/svg', 'line'); // draws a line for debugging porpuses at the "center" of the route
@@ -43,6 +34,26 @@ class easyRoute{
         aline.setAttribute("stroke-wdith",2);
         aline.setAttribute("stroke","black");
         svg.appendChild(aline);
+    }
+}
+
+class hold{
+    constructor(x,y,colour,holdType){
+        this.holdType = holdType;
+        this.x = x;
+        this.y = y;
+        this.colour = colour;
+    }
+    exportHold(){
+        let asvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", holds.hands[this.holdType]);
+        path.setAttribute("fill", holds.colours[this.colour]);
+        asvg.appendChild(path);
+        asvg.setAttribute("x",this.x);
+        asvg.setAttribute("y",this.y);
+        svg.appendChild(asvg);
+        return asvg;
     }
 }
 function randn_bm() {
